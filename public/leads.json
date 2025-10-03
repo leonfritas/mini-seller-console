@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "company": "TechCorp",
+    "email": "alice@techcorp.com",
+    "source": "Website",
+    "score": 90,
+    "status": "New"
+  },
+  {
+    "id": 2,
+    "name": "Bob Smith",
+    "company": "SoftHouse",
+    "email": "bob@softhouse.com",
+    "source": "LinkedIn",
+    "score": 75,
+    "status": "Contacted"
+  },
+  {
+    "id": 3,
+    "name": "Charlie Brown",
+    "company": "Global Inc",
+    "email": "charlie@global.com",
+    "source": "Referral",
+    "score": 60,
+    "status": "Lost"
+  },
+  {
+    "id": 4,
+    "name": "Diana Prince",
+    "company": "Amazon Consulting",
+    "email": "diana@amazonconsulting.com",
+    "source": "Conference",
+    "score": 85,
+    "status": "New"
+  },
+  {
+    "id": 5,
+    "name": "Ethan Clark",
+    "company": "NextGen Systems",
+    "email": "ethan@nextgen.com",
+    "source": "Cold Email",
+    "score": 72,
+    "status": "Contacted"
+  },
+  {
+    "id": 6,
+    "name": "Fiona Adams",
+    "company": "HealthPlus",
+    "email": "fiona@healthplus.com",
+    "source": "Website",
+    "score": 50,
+    "status": "Lost"
+  },
+  {
+    "id": 7,
+    "name": "George Miller",
+    "company": "EcoWorld",
+    "email": "george@ecoworld.com",
+    "source": "LinkedIn",
+    "score": 95,
+    "status": "New"
+  },
+  {
+    "id": 8,
+    "name": "Hannah Lee",
+    "company": "DesignHub",
+    "email": "hannah@designhub.com",
+    "source": "Referral",
+    "score": 65,
+    "status": "Contacted"
+  },
+  {
+    "id": 9,
+    "name": "Ian Wright",
+    "company": "BuildSmart",
+    "email": "ian@buildsmart.com",
+    "source": "Website",
+    "score": 40,
+    "status": "Lost"
+  },
+  {
+    "id": 10,
+    "name": "Julia Roberts",
+    "company": "FinancePro",
+    "email": "julia@financepro.com",
+    "source": "Conference",
+    "score": 88,
+    "status": "New"
+  }
+]
