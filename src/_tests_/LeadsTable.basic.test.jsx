@@ -3,10 +3,9 @@ import LeadsTable from "../components/LeadsTable";
 import { vi, test, expect, beforeEach } from "vitest";
 
 beforeEach(() => {
-  // limpa mocks
+
   vi.restoreAllMocks();
 
-  // mocka fetch para retornar leads fixos
   global.fetch = vi.fn(() =>
     Promise.resolve({
       ok: true,
@@ -22,7 +21,6 @@ beforeEach(() => {
 test("renders leads from JSON", async () => {
   render(<LeadsTable onSelectLead={() => {}} />);
 
-  // espera múltiplos "Alice" (table + card)
   const aliceEls = await screen.findAllByText("Alice");
   expect(aliceEls.length).toBeGreaterThan(0);
 

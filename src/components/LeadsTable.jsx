@@ -8,15 +8,13 @@ export default function LeadsTable({ onSelectLead }) {
   const [statusFilter, setStatusFilter] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
   const [page, setPage] = useState(1);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // controla o dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pageSize = 10;
 
-  // Reset page sempre que filtro muda
   useEffect(() => {
     setPage(1);
   }, [searchTerm, statusFilter, sortDesc]);
 
-  // Carregar filtros do localStorage
   useEffect(() => {
     const saved = localStorage.getItem("filters");
     if (saved) {
@@ -27,7 +25,6 @@ export default function LeadsTable({ onSelectLead }) {
     }
   }, []);
 
-  // Salvar filtros no localStorage
   useEffect(() => {
     localStorage.setItem(
       "filters",
@@ -35,7 +32,6 @@ export default function LeadsTable({ onSelectLead }) {
     );
   }, [searchTerm, statusFilter, sortDesc]);
 
-  // Buscar leads
   useEffect(() => {
     fetch("/leads.json")
       .then((res) => {
@@ -56,7 +52,7 @@ export default function LeadsTable({ onSelectLead }) {
   if (error) return <p className="text-red-500">{error}</p>;
   if (leads.length === 0) return <p>No leads found.</p>;
 
-  // Filtro e ordenação
+
   const filteredLeads = leads
     .filter(
       (lead) =>
@@ -66,7 +62,7 @@ export default function LeadsTable({ onSelectLead }) {
     .filter((lead) => (statusFilter ? lead.status === statusFilter : true))
     .sort((a, b) => (sortDesc ? b.score - a.score : a.score - b.score));
 
-  // Paginação
+
   const paginatedLeads = filteredLeads.slice(
     (page - 1) * pageSize,
     page * pageSize
@@ -74,7 +70,7 @@ export default function LeadsTable({ onSelectLead }) {
 
   return (
     <div>
-      {/* Filter bar estilizada */}
+
       <form
         className="mb-4"
         onSubmit={(e) => {
@@ -82,7 +78,7 @@ export default function LeadsTable({ onSelectLead }) {
         }}
       >
         <div className="flex relative gap-2">
-          {/* Botão do dropdown */}
+
           <div className="relative">
             <button
               type="button"
@@ -107,7 +103,6 @@ export default function LeadsTable({ onSelectLead }) {
               </svg>
             </button>
 
-            {/* Dropdown */}
             {dropdownOpen && (
               <div className="absolute top-12 left-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
@@ -130,7 +125,6 @@ export default function LeadsTable({ onSelectLead }) {
             )}
           </div>
 
-          {/* Campo de busca */}
           <div className="relative w-full">
             <input
               type="search"
@@ -142,7 +136,6 @@ export default function LeadsTable({ onSelectLead }) {
             />
           </div>
 
-          {/* Botão de Sort */}
           <button
             type="button"
             onClick={() => setSortDesc(!sortDesc)}
@@ -153,8 +146,6 @@ export default function LeadsTable({ onSelectLead }) {
         </div>
       </form>
 
-
-      {/* Desktop Table */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg hidden md:block">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -203,34 +194,50 @@ export default function LeadsTable({ onSelectLead }) {
         </table>
       </div>
 
-      {/* Mobile Cards */}
-      <div className="space-y-2 md:hidden">
+      <div className="space-y-3 md:hidden">
         {paginatedLeads.map((lead) => (
           <div
             key={lead.id}
             onClick={() => onSelectLead(lead)}
-            className="p-4 border rounded-lg shadow-md bg-white cursor-pointer hover:bg-gray-50 transition"
+            className="p-4 rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-gray-900 
+                      border border-gray-700 cursor-pointer hover:scale-[1.02] 
+                      hover:shadow-xl transition-transform"
           >
-            <p className="font-semibold">{lead.name}</p>
-            <p className="text-sm text-gray-600">{lead.company}</p>
-            <p className="text-xs">{lead.email}</p>
+            <p className="text-lg font-semibold text-gray-100">{lead.name}</p>
+
+            <p className="text-sm text-gray-400">{lead.company}</p>
+
+            <p className="text-xs text-gray-500 italic">{lead.email}</p>
+
             <p
-              className={`text-xs font-bold ${
+              className={`mt-2 text-sm font-bold ${
                 lead.score >= 80
-                  ? "text-green-600"
+                  ? "text-green-400"
                   : lead.score >= 60
-                  ? "text-yellow-600"
-                  : "text-red-600"
+                  ? "text-yellow-400"
+                  : "text-red-400"
               }`}
             >
               Score: {lead.score}
             </p>
-            <p className="text-xs">Status: {lead.status}</p>
+
+            <span
+              className={`inline-block mt-2 px-2 py-1 text-xs rounded-full font-medium ${
+                lead.status === "New"
+                  ? "bg-blue-600/20 text-blue-400"
+                  : lead.status === "Contacted"
+                  ? "bg-yellow-600/20 text-yellow-400"
+                  : lead.status === "Lost"
+                  ? "bg-red-600/20 text-red-400"
+                  : "bg-gray-600/20 text-gray-300"
+              }`}
+            >
+              {lead.status || "—"}
+            </span>
           </div>
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between mt-4">
         <button
           disabled={page === 1}

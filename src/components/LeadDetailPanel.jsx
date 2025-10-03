@@ -52,13 +52,11 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
 
   return (
     <div className="fixed inset-0 flex z-50">
-      {/* Overlay escuro */}
+
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
-      {/* Painel lateral */}
       <div className="relative ml-auto w-full max-w-md h-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-l-2xl shadow-2xl p-6 flex flex-col border-l border-gray-700">
         
-        {/* Botão fechar */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 cursor-pointer"
@@ -67,7 +65,6 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
           <X size={20} />
         </button>
 
-        {/* Cabeçalho */}
         <h2 className="text-xl font-bold mb-4 text-gray-100">{lead.name}</h2>
         <div className="text-sm text-gray-400 mb-2">
           <span className="font-medium text-gray-300">Company:</span> {lead.company}
@@ -76,7 +73,6 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
           <span className="font-medium text-gray-300">Score:</span> {lead.score}
         </div>
 
-        {/* Email */}
         <label className="block text-sm font-medium mb-1 text-gray-300">Email</label>
         <input
           type="email"
@@ -89,7 +85,6 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
           aria-invalid={email && !isEmailValid}
         />
 
-        {/* Status - dropdown custom */}
         <label className="block text-sm font-medium mb-1 text-gray-300">Status</label>
         <div className="relative mb-3">
           <button
@@ -99,7 +94,7 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
             className="p-2 w-full bg-gray-700 border border-gray-600 rounded-lg text-gray-100 text-left hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 flex items-center justify-between"
           >
             <span>{status}</span>
-            {/* Ícone setinha */}
+
             <svg
               className={`w-4 h-4 ml-2 transition-transform ${
                 statusOpen ? "rotate-180" : ""
@@ -131,7 +126,6 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
           )}
         </div>
 
-        {/* Amount */}
         <label className="block text-sm font-medium mb-1 text-gray-300">Amount (optional)</label>
         <input
           type="number"
@@ -145,15 +139,14 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
 
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
-        {/* Ações */}
         <div className="mt-auto flex items-center justify-between gap-2">
           <button
             onClick={() =>
               onConvert({
                 ...lead,
-                email,                     // pega o email atualizado
-                status,                    // pega o status atualizado do state
-                suggestedAmount: amount,   // pega o valor atualizado
+                email,                   
+                status,                  
+                suggestedAmount: amount, 
               })
             }
             disabled={saving}
