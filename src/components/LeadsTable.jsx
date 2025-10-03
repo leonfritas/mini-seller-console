@@ -8,14 +8,15 @@ export default function LeadsTable({ onSelectLead }) {
   const [statusFilter, setStatusFilter] = useState("");
   const [sortDesc, setSortDesc] = useState(true);
   const [page, setPage] = useState(1);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // controla o dropdown
   const pageSize = 10;
 
-  // reset page whenever filters change
+  // Reset page sempre que filtro muda
   useEffect(() => {
     setPage(1);
   }, [searchTerm, statusFilter, sortDesc]);
 
-  // restore filters from localStorage
+  // Carregar filtros do localStorage
   useEffect(() => {
     const saved = localStorage.getItem("filters");
     if (saved) {
@@ -26,7 +27,7 @@ export default function LeadsTable({ onSelectLead }) {
     }
   }, []);
 
-  // save filters on change
+  // Salvar filtros no localStorage
   useEffect(() => {
     localStorage.setItem(
       "filters",
@@ -34,7 +35,7 @@ export default function LeadsTable({ onSelectLead }) {
     );
   }, [searchTerm, statusFilter, sortDesc]);
 
-  // fetch leads
+  // Buscar leads
   useEffect(() => {
     fetch("/leads.json")
       .then((res) => {
@@ -51,12 +52,11 @@ export default function LeadsTable({ onSelectLead }) {
       });
   }, []);
 
-
   if (loading) return <p className="text-gray-500">Loading leads...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
   if (leads.length === 0) return <p>No leads found.</p>;
 
-  // filter + sort
+  // Filtro e ordenação
   const filteredLeads = leads
     .filter(
       (lead) =>
@@ -66,7 +66,7 @@ export default function LeadsTable({ onSelectLead }) {
     .filter((lead) => (statusFilter ? lead.status === statusFilter : true))
     .sort((a, b) => (sortDesc ? b.score - a.score : a.score - b.score));
 
-  // apply pagination AFTER filtering/sorting
+  // Paginação
   const paginatedLeads = filteredLeads.slice(
     (page - 1) * pageSize,
     page * pageSize
@@ -74,86 +74,168 @@ export default function LeadsTable({ onSelectLead }) {
 
   return (
     <div>
-      {/* Filter bar */}
-      <div className="flex flex-col md:flex-row gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search by name or company..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 border border-gray-300 rounded w-full"
-        />
-
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="p-2 border border-gray-300 rounded w-1/3 md:w-1/6"
+      {/* Filter bar estilizada */}
+      <form
+  className="mb-4"
+  onSubmit={(e) => {
+    e.preventDefault();
+  }}
+>
+  <div className="flex relative gap-2">
+    {/* Botão do dropdown */}
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setDropdownOpen((prev) => !prev)}
+        className="shrink-0 z-10 inline-flex items-center justify-between px-4 h-11 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-700 dark:text-white rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700"
+      >
+        {statusFilter || "All Status"}
+        <svg
+          className="w-3 h-3 ml-2"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
         >
-          <option value="">All Status</option>
-          <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Lost">Lost</option>
-        </select>
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
 
-        <button
-          onClick={() => setSortDesc(!sortDesc)}
-          className="p-2 border border-gray-300 rounded bg-gray-50 hover:bg-gray-100"
-        >
-          Sort Score {sortDesc ? "↓" : "↑"}
-        </button>
+      {/* Dropdown */}
+      {dropdownOpen && (
+        <div className="absolute top-12 left-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+          <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+            {["", "New", "Contacted", "Lost"].map((status) => (
+              <li key={status}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  {status || "All Status"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+
+    {/* Campo de busca */}
+    <div className="relative w-full">
+      <input
+        type="search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        id="search-dropdown"
+        className="block w-full h-11 px-4 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        placeholder="Search by name or company..."
+      />
+    </div>
+
+    {/* Botão de Sort */}
+    <button
+      type="button"
+      onClick={() => setSortDesc(!sortDesc)}
+      className="h-11 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700"
+    >
+      Sort {sortDesc ? "↓" : "↑"}
+    </button>
+  </div>
+</form>
+
+
+      {/* Desktop Table */}
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg hidden md:block">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3">Name</th>
+              <th scope="col" className="px-6 py-3">Company</th>
+              <th scope="col" className="px-6 py-3">Email</th>
+              <th scope="col" className="px-6 py-3">Score</th>
+              <th scope="col" className="px-6 py-3">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedLeads.map((lead, idx) => (
+              <tr
+                key={lead.id}
+                className={`cursor-pointer border-b dark:border-gray-700 ${
+                  idx % 2 === 0
+                    ? "bg-white dark:bg-gray-800"
+                    : "bg-gray-50 dark:bg-gray-900"
+                } hover:bg-blue-100 dark:hover:bg-gray-700`}
+                onClick={() => onSelectLead(lead)}
+              >
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {lead.name}
+                </th>
+                <td className="px-6 py-4">{lead.company}</td>
+                <td className="px-6 py-4">{lead.email}</td>
+                <td
+                  className={`px-6 py-4 font-bold ${
+                    lead.score >= 80
+                      ? "text-green-600"
+                      : lead.score >= 60
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {lead.score}
+                </td>
+                <td className="px-6 py-4">{lead.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Desktop: table */}
-      <table className="hidden md:table w-full border border-gray-300 text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Company</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Score</th>
-            <th className="p-2 border">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedLeads.map((lead) => (
-            <tr
-              key={lead.id}
-              className="cursor-pointer hover:bg-gray-50"
-              onClick={() => onSelectLead(lead)}
-            >
-              <td className="p-2 border">{lead.name}</td>
-              <td className="p-2 border">{lead.company}</td>
-              <td className="p-2 border">{lead.email}</td>
-              <td className="p-2 border">{lead.score}</td>
-              <td className="p-2 border">{lead.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Mobile: cards */}
+      {/* Mobile Cards */}
       <div className="space-y-2 md:hidden">
         {paginatedLeads.map((lead) => (
           <div
             key={lead.id}
             onClick={() => onSelectLead(lead)}
-            className="p-4 border rounded shadow-sm bg-white cursor-pointer hover:bg-gray-50"
+            className="p-4 border rounded-lg shadow-md bg-white cursor-pointer hover:bg-gray-50 transition"
           >
             <p className="font-semibold">{lead.name}</p>
             <p className="text-sm text-gray-600">{lead.company}</p>
             <p className="text-xs">{lead.email}</p>
-            <p className="text-xs font-bold">Score: {lead.score}</p>
+            <p
+              className={`text-xs font-bold ${
+                lead.score >= 80
+                  ? "text-green-600"
+                  : lead.score >= 60
+                  ? "text-yellow-600"
+                  : "text-red-600"
+              }`}
+            >
+              Score: {lead.score}
+            </p>
             <p className="text-xs">Status: {lead.status}</p>
           </div>
         ))}
       </div>
 
-      {/* Pagination controls */}
+      {/* Pagination */}
       <div className="flex items-center justify-between mt-4">
         <button
           disabled={page === 1}
           onClick={() => setPage((p) => p - 1)}
-          className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-50 hover:scale-105 transition-transform"
+          class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
         >
           Prev
         </button>
@@ -163,15 +245,12 @@ export default function LeadsTable({ onSelectLead }) {
         <button
           disabled={page * pageSize >= filteredLeads.length}
           onClick={() => setPage((p) => p + 1)}
-          className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-gray-50 hover:scale-105 transition-transform"
+          class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
         >
           Next
         </button>
-      </div>
 
-      {filteredLeads.length === 0 && (
-        <p className="text-gray-500 mt-2">No results found.</p>
-      )}
+      </div>
     </div>
   );
 }

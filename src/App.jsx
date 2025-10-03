@@ -18,11 +18,10 @@ function App() {
       id: Date.now(),
       name: lead.name,
       stage: "New",
-      amount: lead.suggestedAmount || 0, // agora pega o valor digitado
+      amount: lead.suggestedAmount || 0,
       accountName: lead.company,
     };
 
-    // optimistic update
     setOpportunities((prev) => [...prev, newOpportunity]);
     setSelectedLead(null);
 
@@ -39,16 +38,15 @@ function App() {
     }, 1000);
   };
 
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-blue-100 p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md">
           Mini Seller Console
         </h1>
 
         {/* Leads */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
           <h2 className="text-xl font-bold text-gray-700 mb-4">Leads</h2>
           <LeadsTable onSelectLead={setSelectedLead} />
         </div>
@@ -61,7 +59,8 @@ function App() {
         />
 
         {/* Opportunities */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-100 to-purple-100 p-6">
+
           <OpportunitiesTable
             opportunities={opportunities}
             onUpdateStage={handleUpdateStage}
