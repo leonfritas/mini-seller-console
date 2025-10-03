@@ -76,82 +76,82 @@ export default function LeadsTable({ onSelectLead }) {
     <div>
       {/* Filter bar estilizada */}
       <form
-  className="mb-4"
-  onSubmit={(e) => {
-    e.preventDefault();
-  }}
->
-  <div className="flex relative gap-2">
-    {/* Botão do dropdown */}
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setDropdownOpen((prev) => !prev)}
-        className="shrink-0 z-10 inline-flex items-center justify-between px-4 h-11 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-700 dark:text-white rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700"
+        className="mb-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
       >
-        {statusFilter || "All Status"}
-        <svg
-          className="w-3 h-3 ml-2"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m1 1 4 4 4-4"
-          />
-        </svg>
-      </button>
+        <div className="flex relative gap-2">
+          {/* Botão do dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              className="shrink-0 z-10 inline-flex items-center justify-between px-4 h-11 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-700 dark:text-white rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700"
+            >
+              {statusFilter || "All Status"}
+              <svg
+                className="w-3 h-3 ml-2"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 4 4 4-4"
+                />
+              </svg>
+            </button>
 
-      {/* Dropdown */}
-      {dropdownOpen && (
-        <div className="absolute top-12 left-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-          <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-            {["", "New", "Contacted", "Lost"].map((status) => (
-              <li key={status}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStatusFilter(status);
-                    setDropdownOpen(false);
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  {status || "All Status"}
-                </button>
-              </li>
-            ))}
-          </ul>
+            {/* Dropdown */}
+            {dropdownOpen && (
+              <div className="absolute top-12 left-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                  {["", "New", "Contacted", "Lost"].map((status) => (
+                    <li key={status}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStatusFilter(status);
+                          setDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        {status || "All Status"}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Campo de busca */}
+          <div className="relative w-full">
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              id="search-dropdown"
+              className="block w-full h-11 px-4 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              placeholder="Search by name or company..."
+            />
+          </div>
+
+          {/* Botão de Sort */}
+          <button
+            type="button"
+            onClick={() => setSortDesc(!sortDesc)}
+            className="h-11 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700"
+          >
+            Sort {sortDesc ? "↓" : "↑"}
+          </button>
         </div>
-      )}
-    </div>
-
-    {/* Campo de busca */}
-    <div className="relative w-full">
-      <input
-        type="search"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        id="search-dropdown"
-        className="block w-full h-11 px-4 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        placeholder="Search by name or company..."
-      />
-    </div>
-
-    {/* Botão de Sort */}
-    <button
-      type="button"
-      onClick={() => setSortDesc(!sortDesc)}
-      className="h-11 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700"
-    >
-      Sort {sortDesc ? "↓" : "↑"}
-    </button>
-  </div>
-</form>
+      </form>
 
 
       {/* Desktop Table */}

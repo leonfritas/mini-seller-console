@@ -9,7 +9,7 @@ export default function OpportunitiesTable({ opportunities, onUpdateStage }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-700 mb-4">Opportunities</h2>
+      {/* <h2 className="text-xl font-bold text-gray-700 mb-4">Opportunities</h2> */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -42,10 +42,12 @@ export default function OpportunitiesTable({ opportunities, onUpdateStage }) {
                     className="p-2 border border-gray-300 rounded-md text-sm bg-white dark:bg-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-400"
                   >
                     <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Won">Won</option>
                     <option value="Lost">Lost</option>
                   </select>
+
                 </td>
                 <td className="px-6 py-4 font-semibold text-gray-700 dark:text-gray-200">
                   ${opp.amount}

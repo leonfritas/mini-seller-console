@@ -7,6 +7,7 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
 
   useEffect(() => {
     if (lead) {
@@ -15,6 +16,7 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
       setAmount(0);
       setError("");
       setSaving(false);
+      setStatusOpen(false);
     }
   }, [lead]);
 
@@ -49,53 +51,88 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
   };
 
   return (
-    <div className="fixed inset-0 flex">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative ml-auto w-full max-w-md h-full bg-gradient-to-br from-white to-gray-50 rounded-l-2xl shadow-2xl p-6 flex flex-col border-l border-gray-200">
+    <div className="fixed inset-0 flex z-50">
+      {/* Overlay escuro */}
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+
+      {/* Painel lateral */}
+      <div className="relative ml-auto w-full max-w-md h-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-l-2xl shadow-2xl p-6 flex flex-col border-l border-gray-700">
+        
+        {/* Botão fechar */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 cursor-pointer"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 cursor-pointer"
           aria-label="Close"
         >
           <X size={20} />
         </button>
 
-        <h2 className="text-xl font-bold mb-4 text-gray-800">{lead.name}</h2>
-        <div className="text-sm text-gray-600 mb-2">
-          <span className="font-medium">Company:</span> {lead.company}
+        {/* Cabeçalho */}
+        <h2 className="text-xl font-bold mb-4 text-gray-100">{lead.name}</h2>
+        <div className="text-sm text-gray-400 mb-2">
+          <span className="font-medium text-gray-300">Company:</span> {lead.company}
         </div>
-        <div className="text-sm text-gray-600 mb-6">
-          <span className="font-medium">Score:</span> {lead.score}
+        <div className="text-sm text-gray-400 mb-6">
+          <span className="font-medium text-gray-300">Score:</span> {lead.score}
         </div>
 
         {/* Email */}
-        <label className="block text-sm font-medium mb-1">Email</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">Email</label>
         <input
           type="email"
           value={email}
           disabled={saving}
           onChange={(e) => setEmail(e.target.value)}
-          className={`p-2 border rounded-lg w-full mb-3 focus:ring-2 focus:ring-blue-400 focus:outline-none transition ${
-            email && !isEmailValid ? "border-red-500" : "border-gray-300"
+          className={`p-2 bg-gray-700 border rounded-lg w-full mb-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-gray-100 ${
+            email && !isEmailValid ? "border-red-500" : "border-gray-600"
           }`}
           aria-invalid={email && !isEmailValid}
         />
 
-        {/* Status */}
-        <label className="block text-sm font-medium mb-1">Status</label>
-        <select
-          value={status}
-          disabled={saving}
-          onChange={(e) => setStatus(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-3 focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Lost">Lost</option>
-        </select>
+        {/* Status - dropdown custom */}
+        <label className="block text-sm font-medium mb-1 text-gray-300">Status</label>
+        <div className="relative mb-3">
+          <button
+            type="button"
+            onClick={() => setStatusOpen(!statusOpen)}
+            disabled={saving}
+            className="p-2 w-full bg-gray-700 border border-gray-600 rounded-lg text-gray-100 text-left hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 flex items-center justify-between"
+          >
+            <span>{status}</span>
+            {/* Ícone setinha */}
+            <svg
+              className={`w-4 h-4 ml-2 transition-transform ${
+                statusOpen ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {statusOpen && (
+            <ul className="absolute mt-1 w-full bg-gray-800 border border-gray-600 rounded-md shadow-lg z-50">
+              {["New", "Contacted", "Lost"].map((s) => (
+                <li
+                  key={s}
+                  onClick={() => {
+                    setStatus(s);
+                    setStatusOpen(false);
+                  }}
+                  className={`px-4 py-2 hover:bg-gray-700 cursor-pointer ${
+                    status === s ? "bg-gray-700 font-semibold" : ""
+                  }`}
+                >
+                  {s}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {/* Amount */}
-        <label className="block text-sm font-medium mb-1">Amount (optional)</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">Amount (optional)</label>
         <input
           type="number"
           min="0"
@@ -103,25 +140,34 @@ export default function LeadDetailPanel({ lead, onClose, onConvert }) {
           disabled={saving}
           value={amount}
           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-          className="p-2 border border-gray-300 rounded-lg w-full mb-4 focus:ring-2 focus:ring-blue-400"
+          className="p-2 bg-gray-700 border border-gray-600 rounded-lg w-full mb-4 text-gray-100 focus:ring-2 focus:ring-blue-500"
         />
 
-        {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
+        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
+        {/* Ações */}
         <div className="mt-auto flex items-center justify-between gap-2">
           <button
-            onClick={() => onConvert({ ...lead, suggestedAmount: amount })}
+            onClick={() =>
+              onConvert({
+                ...lead,
+                email,                     // pega o email atualizado
+                status,                    // pega o status atualizado do state
+                suggestedAmount: amount,   // pega o valor atualizado
+              })
+            }
             disabled={saving}
             className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-green-700 hover:scale-105 transition-transform"
           >
             <ArrowRight size={16} /> Convert
           </button>
 
+
           <div className="flex gap-2">
             <button
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 border rounded-lg cursor-pointer hover:bg-gray-100 hover:scale-105 transition-transform"
+              className="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg cursor-pointer hover:bg-gray-700 hover:scale-105 transition-transform"
             >
               Cancel
             </button>
